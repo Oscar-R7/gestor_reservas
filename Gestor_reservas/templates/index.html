@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>reservas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
 
 </head>
 
 <body>
     <header>
-
-        <div class="logo">🏨 Hotel Paradise</div>
+        <div id="google_translate_element" style="display:none;"></div><!--este boton se usa para incluir la api de google translate-->
+        <div class="logo">Hotel Paradise</div>
         <nav>
             <a class="menu" href="{{ url_for('habitaciones') }}">habitaciones</a>
+            <a>|</a>
             <a href="{{ url_for('reservas') }}">Mis reservas</a>
+            <a>|</a>
+            <a id="lang" href="#">En</a>
         </nav>
     </header>    
         
@@ -181,7 +184,17 @@
 
     </section>
 
-    
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    includedLanguages: 'en,es',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="{{ url_for('static', filename='tu_archivo.js') }}"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>    
 </body>
 <footer>
 
