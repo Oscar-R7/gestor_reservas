@@ -1,8 +1,11 @@
+import os
+import csv
 from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
+csv = 'registro.csv'
 
 @app.route('/')
 def index():
@@ -35,7 +38,7 @@ def detalle_presidencial():
 @app.route('/confirmar-reserva', methods=['POST'])
 def confirmar_reserva():
     if request.method == 'POST':
-        # Los nombres en [] deben coincidir exactamente con el 'name' del HTML
+        
         nombre = request.form['nombre']
         email = request.form['email']
         telefono = request.form['telefono']
@@ -43,6 +46,17 @@ def confirmar_reserva():
         f_salida = request.form['salida']
         huespedes = request.form['huespedes']
         habitacion = request.form['habitacion']
+
+    file_exists = os.path.isfile(csv)
+
+    with open(csv, mode='a', newline='', encoding='utf-8') as archivo:
+        columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
+        writer = csv.writer(archivo, fieldnames=columnas)
+
+        if not file_exists:
+            writer.writeheader()
+
+        writer.writerow({'nombre': nombre, 'email': email, 'telefono': telefono, 'entrada': f_entrada, 'salida': f_salida, 'huespedes': huespedes, 'habitacion': habitacion})
 
 
         return redirect(url_for('reservas'))
