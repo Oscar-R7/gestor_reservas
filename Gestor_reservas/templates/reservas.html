@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}"> <!--este el el icono que va en la parte de las pestaña -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis reservas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='reservas.css') }}">
 </head>
 <body>
     <header>
-        <div class="logo">🏨 Hotel Paradise</div>
+        <a id="idlogo" href="{{ url_for('index') }}"><div class="logo">Hotel Paradise</div></a><!--Agregue esto para que se devolviera a la pagina de inicio-->
         <nav>
             <a class="menu" href="{{ url_for('habitaciones') }}">habitaciones</a>
             <a href="{{ url_for('reservas') }}">Mis reservas</a>
