@@ -1,57 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="icon" href="{{ url_for('static', filename='imagenes/favicon.png') }}"> <!--este el el icono que va en la parte de las pestaña -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>reservas</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Hotel Paradise</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}"> 
 
 </head>
 
 <body>
     <header>
-
-        <div class="logo">🏨 Hotel Paradise</div>
+        
+        <div id="google_translate_element" style="display:none;"></div><!--este boton se usa para incluir la api de google translate-->
+        <div class="logo">Hotel Paradise</div>
         <nav>
             <a class="menu" href="{{ url_for('habitaciones') }}">habitaciones</a>
+            <a>|</a>
             <a href="{{ url_for('reservas') }}">Mis reservas</a>
+            <a>|</a>
+            <a id="lang" href="#">En</a>
         </nav>
     </header>    
-        
-    <section class="inicio">
-        <h1>Bienvenido al Hotel Paradise </h1>
-        <p>Experimenta el lujo y la comoddidad en nuestras habitaciones<br></p>
-        <p>cuidadosamente diseñadas</p>
-    </section>
+    <section class="inicio">        
+        <section class="hero">
+            <div class="overlay">
+                <img src="https://images.unsplash.com/photo-1445019980597-93fa8acb246c?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aG90ZWx8ZW58MHx8MHx8fDA%3D">
+            </div>
+            <div class="hero-content">
+                <h1 class="title">Bienvenido a hotel Paradise</h1>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Location">
+                        <input type="date">
+                        <input type="date">
 
-    <section class="busqueda">
-        
-        <div class="campo">
-            <label>Buscar</label>
-            <input type="text" placeholder="Buscar habitaciones">
-        </div>
+                        <select>
+                            <option>Guests</option>
+                            <option>1 Guest</option>
+                            <option>2 Guests</option>
+                            <option>3 Guests</option>
+                        </select>
 
-    <div class="campo">
-        <label>Tipos de habitaciones</label>
-        <select>
-            <option>Todos los Tipos</option>
-            <option>Estandar</option>
-            <option>Deluxe</option>
-            <option>Suite</option>
-            <option>Presidencial</option>
-        </select>
-    </div>
+                        <button>Checkout</button>
 
-    <div class="campo">
-        <label>Ordenar por</label>
-        <select>
-            <option>Precio: Menor a mayor</option>
-            <option>Precio: Mayor a menor</option>
-        </select>
-    </div>
-
-    </section>
-
+                    </div>
+            </div>
+        </section>       
 
     <section class="habitaciones">
 
@@ -180,8 +174,19 @@
 
 
     </section>
+    </section> <!--fin del section inicio-->
 
-    
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'es',
+    includedLanguages: 'en,es',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="{{ url_for('static', filename='tu_archivo.js') }}"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>    
 </body>
 <footer>
 
