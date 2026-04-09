@@ -3,12 +3,6 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
-# Configuración MySQL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'gestor_reservas'
-mysql = MySQL(app)
 
 @app.route('/')
 def index():
@@ -50,30 +44,16 @@ def confirmar_reserva():
         huespedes = request.form['huespedes']
         habitacion = request.form['habitacion']
 
-        cur = mysql.connection.cursor()
-        cur.execute("""
-            INSERT INTO reservas (nombre, email, telefono, fecha_entrada, fecha_salida, huespedes, habitacion)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (nombre, email, telefono, f_entrada, f_salida, huespedes, habitacion))
-        mysql.connection.commit()
-        cur.close()
 
         return redirect(url_for('reservas'))
 
 @app.route('/reservas')
 def reservas():
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM reservas')
-    mis_reservas = cur.fetchall()
-    cur.close()
-    return render_template('reservas.html', lista_reservas=mis_reservas)
+    return render_template('reservas.html')
 
 @app.route('/eliminar_reserva/<int:id>')
+
 def eliminar_reserva(id):
-    cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM reservas WHERE id=%s', [id])
-    mysql.connection.commit()
-    cur.close()
     return redirect(url_for('reservas'))
 
 if __name__ == '__main__':
