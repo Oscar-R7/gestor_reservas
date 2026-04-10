@@ -73,8 +73,8 @@ def confirmar_reserva():
                 'habitacion': habitacion
             })
 
-        # 4. Redirigimos a la página de reservas
-        return redirect(url_for('reservas'))
+        # Redirigimos a la página de reservas
+        return redirect(url_for('reservas', ))
 
 @app.route('/reservas')
 def reservas():
@@ -86,8 +86,8 @@ def reservas():
             reader = csv.reader(archivo)
             next(reader, None)  # Saltamos la cabecera
             for i, fila in enumerate(reader):
-                # Insertamos el ID (i) al principio de la lista para que coincida con tu HTML
-                fila.insert(0, i) 
+           
+           
                 lista_reservas.append(fila)
     
     return render_template('reservas.html', lista_reservas=lista_reservas)
