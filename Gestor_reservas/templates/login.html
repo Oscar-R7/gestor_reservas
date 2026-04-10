@@ -16,7 +16,7 @@
 <body>
     <div class="login">
         <div class="form-container">
-            <form action="/" class="form">
+            <form class="form" onsubmit="loginUser(event)">
                 <label for="email" class="label">Usuario:</label>
                 <input type="text" id="user-adress" placeholder="Ejemplo" class="input-password">
                 <label for="new-password" class="label">Contraseña:</label>
@@ -31,7 +31,20 @@
             <!--<button action="/" class="secundary-button">              
                 Registrarme
             </button>-->
+            <script>
+                function loginUser(e){
+                    e.preventDefault();
 
+                    let user = document.getElementById("user-adress").value;
+                    let password = document.getElementById("password").value;
+
+                    if(user === "admin1" && password === "123456"){
+                        window.location.href = "{{ url_for('admin') }}"
+                    } else{
+                        alert("Usuario o contraseña incorrectos");
+                    }
+                }
+            </script>
         </div>
     </div>
 </body>
