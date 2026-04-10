@@ -3,23 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel Hotelero</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 </head>
 <body>
 
 <div class="container">
-
-    <!-- Menú lateral -->
-    <aside class="menu">
-        <h2>MENÚ</h2>
-        <ul>
-            <li>Habitaciones</li>
-            <li>Inventario</li>
-            <li>Finanzas</li>
-            <li>Reportes</li>
-            <li class="config">⚙ Configuración</li>
-        </ul>
-    </aside>
 
     <!-- Contenido principal -->
     <main class="main">
@@ -30,7 +18,7 @@
 
             <!-- Habitaciones -->
             <div class="card">
-                <h3>Habitaciones</h3>
+                <h3></h3>
                 <p>Total 40</p>
                 <label><input type="checkbox"> Disponibles</label>
                 <label><input type="checkbox"> Ocupadas</label>
@@ -48,7 +36,7 @@
             <!-- Finanzas -->
             <div class="card">
                 <h3>Finanzas</h3>
-                <div class="grafico">📊</div>
+                <div class="grafico">aqui va el grafico que generemos</div>
             </div>
 
         </div>
