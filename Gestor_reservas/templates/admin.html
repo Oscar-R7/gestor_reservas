@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Hotelero</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Contenido principal -->
+    <main class="main">
+
+        <h1>PANEL DE CONTROL HOTELERO</h1>
+
+        <div class="cards">
+
+            <!-- Habitaciones -->
+            <div class="card">
+                <h3></h3>
+                <p>Total 40</p>
+                <label><input type="checkbox"> Disponibles</label>
+                <label><input type="checkbox"> Ocupadas</label>
+                <label><input type="checkbox"> Reservadas</label>
+            </div>
+
+            <!-- Inventario -->
+            <div class="card">
+                <h3>Inventario</h3>
+                <label><input type="checkbox"> Toallas</label>
+                <label><input type="checkbox"> Sábanas</label>
+                <label><input type="checkbox"> Amenidades</label>
+            </div>
+
+            <!-- Finanzas -->
+            <div class="card">
+                <h3>Finanzas</h3>
+                <div class="grafico">aqui va el grafico que generemos</div>
+            </div>
+
+        </div>
+
+        <!-- Tabla -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Habs</th>
+                    <th>Estado</th>
+                    <th>Huésped</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>305</td>
+                    <td>---</td>
+                    <td>---</td>
+                </tr>
+                <tr>
+                    <td>101</td>
+                    <td>Reservada</td>
+                    <td>José Rodríguez</td>
+                </tr>
+                <tr>
+                    <td>204</td>
+                    <td>Ocupada</td>
+                    <td>Ana Ruiz</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </main>
+
+</div>
+
+</body>
+</html>
