@@ -5,7 +5,7 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
-csv = 'registro.csv'
+ruta_csv = 'registro.csv'
 
 @app.route('/')
 def index():
@@ -39,6 +39,7 @@ def detalle_presidencial():
 def confirmar_reserva():
     if request.method == 'POST':
         
+        # Captura de datos del formulario
         nombre = request.form['nombre']
         email = request.form['email']
         telefono = request.form['telefono']
@@ -47,23 +48,49 @@ def confirmar_reserva():
         huespedes = request.form['huespedes']
         habitacion = request.form['habitacion']
 
-    file_exists = os.path.isfile(csv)
+        # Verificamos si el archivo ya existe antes de escribir
+        file_exists = os.path.isfile(ruta_csv)
 
-    with open(csv, mode='a', newline='', encoding='utf-8') as archivo:
-        columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
-        writer = csv.writer(archivo, fieldnames=columnas)
+        # Guardar en el archivo CSV
+        with open(ruta_csv, mode='a', newline='', encoding='utf-8') as archivo:
+            columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
+            
+            
+            writer = csv.DictWriter(archivo, fieldnames=columnas)
 
-        if not file_exists:
-            writer.writeheader()
+            # Si el archivo no existe, escribe la primera fila con los títulos
+            if not file_exists:
+                writer.writeheader()
 
-        writer.writerow({'nombre': nombre, 'email': email, 'telefono': telefono, 'entrada': f_entrada, 'salida': f_salida, 'huespedes': huespedes, 'habitacion': habitacion})
+            # datos del huesped
+            writer.writerow({
+                'nombre': nombre, 
+                'email': email, 
+                'telefono': telefono, 
+                'entrada': f_entrada, 
+                'salida': f_salida, 
+                'huespedes': huespedes, 
+                'habitacion': habitacion
+            })
 
-
+        # 4. Redirigimos a la página de reservas
         return redirect(url_for('reservas'))
 
 @app.route('/reservas')
 def reservas():
-    return render_template('reservas.html')
+    lista_reservas = []
+    #verificacion archivo existente
+    if os.path.exists(ruta_csv):
+        with open(ruta_csv, mode='r', encoding='utf-8') as archivo:
+            # Leemos el archivo y convertimos cada fila en una lista
+            reader = csv.reader(archivo)
+            next(reader, None)  # Saltamos la cabecera
+            for i, fila in enumerate(reader):
+                # Insertamos el ID (i) al principio de la lista para que coincida con tu HTML
+                fila.insert(0, i) 
+                lista_reservas.append(fila)
+    
+    return render_template('reservas.html', lista_reservas=lista_reservas)
 
 @app.route('/eliminar_reserva/<int:id>')
 
