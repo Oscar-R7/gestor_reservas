@@ -19,7 +19,7 @@ header {
 
 nav {
     display: flex;
-    gap: 20px;
+    gap: 50px;
 }
 
 nav a{
@@ -37,6 +37,8 @@ nav a{
     display: flex;
     flex-direction: column;
     gap: 30px;
+    padding: 0 0 50px 0;
+
 }
 
 .hero{
@@ -135,9 +137,12 @@ input, select{
     display: flex;
     gap: 30px;
     margin-top: 20px;
+    align-items: stretch; 
 }
 
 .card{
+    display: flex;
+    flex-direction: column;
     background: white;
     border-radius: 12px;
     overflow: hidden;
@@ -167,6 +172,15 @@ input, select{
 
 .info{
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.info a{
+    margin-top: auto;    
+}
+.info button:hover {
+    background: #0056b3;
 }
 
 .titulo-precio{
@@ -425,4 +439,50 @@ button{
 .btn-cancelar:hover {
     background-color: #c12a36;
 }
+.footer {
+    background-color: rgba(139, 70, 10, 0.796);;
+    color: white;
+    padding: 40px 20px 20px;
+    font-family: Arial, sans-serif;
+}
 
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    margin-bottom: 20px;
+}
+
+.footer-section h3,
+.footer-section h4 {
+    margin-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 5px;
+}
+
+.footer-section a {
+    text-decoration: none;
+    color: #ccc;
+}
+
+.footer-section a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    text-align: center;
+    border-top: 1px solid #444;
+    margin-top: 20px;
+    padding-top: 10px;
+    font-size: 14px;
+}

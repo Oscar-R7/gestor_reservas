@@ -19,8 +19,6 @@
             <a>|</a>
             <a href="{{ url_for('reservas') }}">Mis reservas</a>
             <a>|</a>
-            <a id="lang" href="#">En</a>
-            <a>|</a>
             <a href="{{ url_for('login') }}">login</a>
         </nav>
     </header>    
@@ -177,22 +175,36 @@
 
     </section>
     </section> <!--fin del section inicio-->
-
-<script>
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'es',
-    includedLanguages: 'en,es',
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-</script>
-<script src="{{ url_for('static', filename='tu_archivo.js') }}"></script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>    
+   
 </body>
-<footer>
+<footer class="footer">
+    <div class="footer-container">
 
+        <div class="footer-section">
+            <h3>Hotel Paradise</h3>
+            <p>Disfruta del mejor servicio y comodidad.</p>
+        </div>
 
+        <div class="footer-section">
+            <h4>Enlaces</h4>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Habitaciones</a></li>
+                <li><a href="#">Reservas</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <p>Email: info@hotel.com</p>
+            <p>Tel: +57 300 000 0000</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 Hotel Paradise - Todos los derechos reservados</p>
+    </div>
 </footer>
 
 </html>
