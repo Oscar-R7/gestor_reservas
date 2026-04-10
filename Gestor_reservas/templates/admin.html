@@ -18,19 +18,18 @@
 
             <!-- Habitaciones -->
             <div class="card">
-                <h3></h3>
-                <p>Total 40</p>
-                <label><input type="checkbox"> Disponibles</label>
-                <label><input type="checkbox"> Ocupadas</label>
-                <label><input type="checkbox"> Reservadas</label>
+                <h3>Habitaciones</h3>
+                <label> Disponibles <strong>{{ hab }}</strong></label>
+                <label> Ocupadas  <strong>{{ ocup }}</strong></label>
+                <label> Reservadas  <strong>{{ reser }}</strong></label>
             </div>
 
             <!-- Inventario -->
             <div class="card">
                 <h3>Inventario</h3>
-                <label><input type="checkbox"> Toallas</label>
-                <label><input type="checkbox"> Sábanas</label>
-                <label><input type="checkbox"> Amenidades</label>
+                <label> Toallas</label>
+                <label> Sábanas</label>
+                <label> Amenidades</label>
             </div>
 
             <!-- Finanzas -->
@@ -41,33 +40,30 @@
 
         </div>
 
-        <!-- Tabla -->
-        <table>
+        <table border="1">
             <thead>
                 <tr>
-                    <th>Habs</th>
-                    <th>Estado</th>
-                    <th>Huésped</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Fecha de entrada</th>
+                    <th>Fecha de salida</th>
+                    <th>Huespedes</th>
+                    <th>Habitacion</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>305</td>
-                    <td>---</td>
-                    <td>---</td>
-                </tr>
-                <tr>
-                    <td>101</td>
-                    <td>Reservada</td>
-                    <td>José Rodríguez</td>
-                </tr>
-                <tr>
-                    <td>204</td>
-                    <td>Ocupada</td>
-                    <td>Ana Ruiz</td>
-                </tr>
+                {% for reserva in lista_reservas %}
+                    <tr>
+                        {% for dato in reserva %}
+                        <td>{{ dato }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
+        
+        
 
     </main>
 
