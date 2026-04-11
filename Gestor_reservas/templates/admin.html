@@ -15,17 +15,16 @@
         <div class="cards">
             <div class="card">
                 <h3>Habitaciones</h3>
-                <p>Total 40</p>
-                <label><input type="checkbox"> Disponibles</label>
-                <label><input type="checkbox"> Ocupadas</label>
-                <label><input type="checkbox"> Reservadas</label>
+                <label> Disponibles <strong>{{ hab }}</strong></label>
+                <label> Ocupadas  <strong>{{ ocup }}</strong></label>
+                <label> Reservadas  <strong>{{ reser }}</strong></label>
             </div>
 
             <div class="card">
                 <h3>Inventario</h3>
-                <label><input type="checkbox"> Toallas</label>
-                <label><input type="checkbox"> Sábanas</label>
-                <label><input type="checkbox"> Amenidades</label>
+                <label> Toallas</label>
+                <label> Sábanas</label>
+                <label> Amenidades</label>
             </div>
 
             <div class="card">
@@ -38,30 +37,31 @@
             </div>
         </div>
 
-        <table>
+        <table border="1">
             <thead>
                 <tr>
-                    <th>Habs</th>
-                    <th>Estado</th>
-                    <th>Huésped</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Fecha de entrada</th>
+                    <th>Fecha de salida</th>
+                    <th>Huespedes</th>
+                    <th>Habitacion</th>
                 </tr>
             </thead>
             <tbody>
-                {% if reservas %}
-                    {% for r in reservas %}
+                {% for reserva in lista_reservas %}
                     <tr>
-                        <td>{{ 100 + loop.index }}</td>
-                        <td>Confirmada</td>
-                        <td>{{ r[0] }}</td>
+                        {% for dato in reserva %}
+                        <td>{{ dato }}</td>
+                        {% endfor %}
                     </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="3" style="text-align:center;">No hay datos en registro.csv</td>
-                    </tr>
-                {% endif %}
+                {% endfor %}
             </tbody>
         </table>
+        
+        
+
     </main>
 </div>
 

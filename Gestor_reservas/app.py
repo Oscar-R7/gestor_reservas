@@ -1,11 +1,31 @@
 import os
 import csv
 from flask import Flask, render_template, request, redirect, url_for
-from flask_mysqldb import MySQL
+#creo que esta funcion no hace nada ---> from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 
 ruta_csv = 'registro.csv'
+hab = 50
+ocup = 0 
+reser = 0
+#funcion para calcular las habitaciones --------------------------------------------
+def calcular_estado():
+    total = 50
+    ocupadas = 0
+
+    if os.path.exists(ruta_csv):
+        with open(ruta_csv, mode='r', encoding='utf-8') as archivo:
+            reader = csv.reader(archivo)
+            next(reader, None)
+
+            for _ in reader:
+                ocupadas += 1
+
+    disponibles = total - ocupadas
+
+    return total, ocupadas, disponibles
+#------------------------------------------------------------------------------------
 
 @app.route('/')
 def index():
@@ -37,6 +57,7 @@ def detalle_presidencial():
 
 @app.route('/confirmar-reserva', methods=['POST'])
 def confirmar_reserva():
+    global hab # definiendo hab como variable global
     if request.method == 'POST':
         
         # Captura de datos del formulario
@@ -73,8 +94,10 @@ def confirmar_reserva():
                 'habitacion': habitacion
             })
 
-        # Redirigimos a la página de reservas
-        return redirect(url_for('reservas', ))
+        hab -= 1#esto es para resta las habitaciones reservadas
+        # 4. Redirigimos a la página de reservas
+        return redirect(url_for('reservas')) #agregarle el 'admin' se tira el codigo
+
 
 @app.route('/reservas')
 def reservas():
@@ -92,14 +115,34 @@ def reservas():
     
     return render_template('reservas.html', lista_reservas=lista_reservas)
 
-@app.route('/eliminar_reserva/<int:id>')
-
-def eliminar_reserva(id):
-    return redirect(url_for('reservas'))
+#AQUI ESTO INTENTANDO QUE SE GENERE LA TABLA EN LA PARTE DEL ADMIN---------------------------------------------------------
+def obtener_reservas():
+    lista_reservas = []
+    
+    if os.path.exists(ruta_csv):
+        with open(ruta_csv, mode='r', encoding='utf-8') as archivo:
+            reader = csv.reader(archivo)
+            next(reader, None)
+            
+            for i, fila in enumerate(reader):
+                #fila.insert(0, i)
+                lista_reservas.append(fila)
+    
+    return lista_reservas
 
 @app.route('/admin')
 def admin():
-    return render_template('admin.html')
+    hab = 50
+    ocup = 0
+    reser = 0
+    return render_template('admin.html', lista_reservas=obtener_reservas(),hab=hab,ocup=ocup,reser=reser)
+#-----------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/eliminar_reserva/<int:id>')                                                    
+def eliminar_reserva(id):
+    return redirect(url_for('reservas'))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
