@@ -2,72 +2,80 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel Hotelero</title>
+    <title>Panel de Administración</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <main class="main">
-        <h1>PANEL DE CONTROL HOTELERO</h1>
-
-        <div class="cards">
-            <div class="card">
-                <h3>Habitaciones</h3>
-                <label> Disponibles <strong>{{ hab }}</strong></label>
-                <label> Ocupadas  <strong>{{ ocup }}</strong></label>
-                <label> Reservadas  <strong>{{ reser }}</strong></label>
-            </div>
-
-            <div class="card">
-                <h3>Inventario</h3>
-                <label> Toallas</label>
-                <label> Sábanas</label>
-                <label> Amenidades</label>
-            </div>
-
-            <div class="card">
-                <h3>Finanzas</h3>
-                //INGRESAR CSV
-                <input type="file" id="csvInput" accept=".csv" style="font-size: 11px; margin-bottom: 10px; width: 100%;">
-                <div class="grafico-container" style="position: relative; height: 250px; width: 100%;">
-                    <canvas id="graficoFinanzas"></canvas>
-                </div>
-            </div>
+<div class="dashboard-container">
+    <header class="main-header">
+        <div class="title-group">
+            <h1>PANEL DE CONTROL</h1>
+            <p>Gestión de reservas y ocupación hotelera</p>
         </div>
+        <div class="actions">
+            <label for="csvInput" class="btn-cargar">
+                <span>📁</span> Cargar archivo
+            </label>
+            <input type="file" id="csvInput" accept=".csv" hidden>
+        </div>
+    </header>
 
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Telefono</th>
-                    <th>Fecha de entrada</th>
-                    <th>Fecha de salida</th>
-                    <th>Huespedes</th>
-                    <th>Habitacion</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for reserva in lista_reservas %}
+    <section class="stats-grid">
+        <div class="stat-card blue">
+            <span class="label">Habitaciones Disponibles</span>
+            <span class="value">{{ hab }}</span>
+        </div>
+        <div class="stat-card green">
+            <span class="label">Ocupación Actual</span>
+            <span class="value">{{ (ocup / 50 * 100)|int }}%</span>
+        </div>
+        <div class="stat-card purple">
+            <span class="label">Total Reservas</span>
+            <span class="value">{{ reser }}</span>
+        </div>
+    </section>
+
+    <section class="chart-container">
+        <h3>Tendencia de ocupación</h3>
+        <div class="canvas-wrapper">
+            <canvas id="graficoFinanzas"></canvas>
+        </div>
+    </section>
+
+    <section class="table-container">
+        <h3>Listado de reservas</h3>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Huésped</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Huéspedes</th>
+                        <th>Habitación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in lista_reservas %}
                     <tr>
                         {% for dato in reserva %}
                         <td>{{ dato }}</td>
                         {% endfor %}
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-        
-
-    </main>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
 
-//LOGICA DEL GRAFICO
-
 <script>
+    // Lógica para procesar el CSV y generar el gráfico de líneas
+    let miGrafico;
     document.getElementById('csvInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -75,69 +83,36 @@
         const reader = new FileReader();
         reader.onload = function(event) {
             const contenido = event.target.result;
-            // Limpiamos espacios y saltos de línea extra
-            const lineas = contenido.trim().split('\n').filter(line => line.trim() !== "");
+            const lineas = contenido.trim().split('\n').slice(1); // Ignorar cabecera
             
-            const semanas = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
-            const datasets = [];
-            const colores = [
-                'rgba(54, 162, 235, 0.8)',  // Estándar
-                'rgba(255, 99, 132, 0.8)',  // Deluxe
-                'rgba(75, 192, 192, 0.8)',  // Suite Junior
-                'rgba(255, 206, 86, 0.8)'   // Presidencial
-            ];
-
-            // Empezamos desde i=1 para saltar la cabecera del CSV
-            for (let i = 1; i < lineas.length; i++) {
-                const columnas = lineas[i].split(',');
-                if (columnas.length >= 5) {
-                    datasets.push({
-                        label: columnas[0].trim(),
-                        data: [
-                            parseFloat(columnas[1]) || 0, 
-                            parseFloat(columnas[2]) || 0, 
-                            parseFloat(columnas[3]) || 0, 
-                            parseFloat(columnas[4]) || 0
-                        ],
-                        backgroundColor: colores[i-1] || 'rgba(150, 150, 150, 0.5)',
-                        borderWidth: 1
-                    });
-                }
-            }
-            
-            if (datasets.length > 0) {
-                renderizarGrafico(semanas, datasets);
-            } else {
-                alert("Formato CSV inválido. Asegúrate de usar comas (,) y tener 5 columnas.");
-            }
+            const labels = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
+            const datasets = lineas.map((linea, i) => {
+                const datos = linea.split(',');
+                const colores = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'];
+                return {
+                    label: datos[0],
+                    data: datos.slice(1, 5).map(Number),
+                    borderColor: colores[i % colores.length],
+                    backgroundColor: colores[i % colores.length] + '22',
+                    fill: true,
+                    tension: 0.4
+                };
+            });
+            renderizar(labels, datasets);
         };
         reader.readAsText(file);
     });
 
-    let miGrafico;
-    function renderizarGrafico(labels, datasets) {
-        // CORRECCIÓN: Usar el ID correcto que pusimos en el HTML
+    function renderizar(labels, datasets) {
         const ctx = document.getElementById('graficoFinanzas').getContext('2d');
-        
-        if (miGrafico) { 
-            miGrafico.destroy(); 
-        }
-
+        if (miGrafico) miGrafico.destroy();
         miGrafico = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: labels, datasets: datasets },
-            options: {
-                responsive: true,
+            type: 'line',
+            data: { labels, datasets },
+            options: { 
+                responsive: true, 
                 maintainAspectRatio: false,
-                scales: { 
-                    y: { 
-                        beginAtZero: true,
-                        ticks: { stepSize: 1 } 
-                    } 
-                },
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     }

@@ -55,49 +55,31 @@ def detalle_suite():
 def detalle_presidencial():
     return render_template('detalle-presidencial.html')
 
+# app.py (Sección corregida de confirmar_reserva)
 @app.route('/confirmar-reserva', methods=['POST'])
 def confirmar_reserva():
-    global hab # definiendo hab como variable global
     if request.method == 'POST':
-        
-        # Captura de datos del formulario
-        nombre = request.form['nombre']
-        email = request.form['email']
-        telefono = request.form['telefono']
-        f_entrada = request.form['entrada']
-        f_salida = request.form['salida']
-        huespedes = request.form['huespedes']
-        habitacion = request.form['habitacion']
+        datos = {
+            'nombre': request.form['nombre'],
+            'email': request.form['email'],
+            'telefono': request.form['telefono'],
+            'entrada': request.form['entrada'],
+            'salida': request.form['salida'],
+            'huespedes': request.form['huespedes'],
+            'habitacion': request.form['habitacion']
+        }
 
-        # Verificamos si el archivo ya existe antes de escribir
         file_exists = os.path.isfile(ruta_csv)
+        columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
 
-        # Guardar en el archivo CSV
         with open(ruta_csv, mode='a', newline='', encoding='utf-8') as archivo:
-            columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
-            
-            
+            # USAR DictWriter es fundamental para writeheader()
             writer = csv.DictWriter(archivo, fieldnames=columnas)
-
-            # Si el archivo no existe, escribe la primera fila con los títulos
             if not file_exists:
                 writer.writeheader()
+            writer.writerow(datos)
 
-            # datos del huesped
-            writer.writerow({
-                'nombre': nombre, 
-                'email': email, 
-                'telefono': telefono, 
-                'entrada': f_entrada, 
-                'salida': f_salida, 
-                'huespedes': huespedes, 
-                'habitacion': habitacion
-            })
-
-        hab -= 1#esto es para resta las habitaciones reservadas
-        # 4. Redirigimos a la página de reservas
-        return redirect(url_for('reservas')) #agregarle el 'admin' se tira el codigo
-
+        return redirect(url_for('admin')) # Redirigir al panel principal
 
 @app.route('/reservas')
 def reservas():
