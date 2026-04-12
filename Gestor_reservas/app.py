@@ -1,7 +1,7 @@
 import os
 import csv
 from flask import Flask, render_template, request, redirect, url_for
-#creo que esta funcion no hace nada ---> from flask_mysqldb import MySQL
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -55,7 +55,7 @@ def detalle_suite():
 def detalle_presidencial():
     return render_template('detalle-presidencial.html')
 
-# app.py (Sección corregida de confirmar_reserva)
+
 @app.route('/confirmar-reserva', methods=['POST'])
 def confirmar_reserva():
     if request.method == 'POST':
@@ -73,13 +73,13 @@ def confirmar_reserva():
         columnas = ['nombre', 'email', 'telefono', 'entrada', 'salida', 'huespedes', 'habitacion']
 
         with open(ruta_csv, mode='a', newline='', encoding='utf-8') as archivo:
-            # USAR DictWriter es fundamental para writeheader()
+            
             writer = csv.DictWriter(archivo, fieldnames=columnas)
             if not file_exists:
                 writer.writeheader()
             writer.writerow(datos)
 
-        return redirect(url_for('admin')) # Redirigir al panel principal
+        return redirect(url_for('reservas')) # Redirigir al panel principal
 
 @app.route('/reservas')
 def reservas():
@@ -114,10 +114,46 @@ def obtener_reservas():
 
 @app.route('/admin')
 def admin():
-    hab = 50
-    ocup = 0
-    reser = 0
-    return render_template('admin.html', lista_reservas=obtener_reservas(),hab=hab,ocup=ocup,reser=reser)
+    total_habitaciones, ocupadas_hoy, disponibles = calcular_estado()
+    todas_las_reservas = obtener_reservas()
+    reser = len(todas_las_reservas)
+
+    # LÓGICA DEL GRÁFICO DE TENDENCIA
+    #Define el rango de días para el gráfico 
+    hoy = datetime.now()
+    fechas_grafico = []
+    porcentajes_grafico = []
+
+    for i in range(7):
+        dia_evaluado = hoy + timedelta(days=i)
+        fecha_str = dia_evaluado.strftime('%d %b') # Formato "12 Abr"
+        fechas_grafico.append(fecha_str)
+
+        #contador de reservas por dia
+        habitaciones_ocupadas_este_dia = 0
+        for reserva in todas_las_reservas:
+            try:
+                # reserva[3] es Entrada, reserva[4] es Salida (según tu lógica de confirmar_reserva)
+                f_entrada = datetime.strptime(reserva[3], '%Y-%m-%d')
+                f_salida = datetime.strptime(reserva[4], '%Y-%m-%d')
+                
+                # Si el día evaluado está dentro del rango de la reserva
+                if f_entrada.date() <= dia_evaluado.date() < f_salida.date():
+                    habitaciones_ocupadas_este_dia += 1
+            except (ValueError, IndexError):
+                continue
+
+        #Calcula el porcentaje de ocupación 
+        porcentaje = (habitaciones_ocupadas_este_dia / total_habitaciones) * 100
+        porcentajes_grafico.append(round(porcentaje, 1))
+
+    return render_template('admin.html', 
+                           lista_reservas=todas_las_reservas,
+                           hab=disponibles,
+                           ocup=ocupadas_hoy,
+                           reser=reser,
+                           fechas_labels=fechas_grafico,
+                           datos_valores=porcentajes_grafico)
 #-----------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/eliminar_reserva/<int:id>')                                                    
