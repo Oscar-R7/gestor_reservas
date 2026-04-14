@@ -1,11 +1,12 @@
 import os
 import csv
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-ruta_csv = 'registro.csv'
+ruta_csv = 'registro.csv' #este es el la ruta hacia el archivo ha descargar 
+
 hab = 50
 ocup = 0 
 reser = 0
@@ -106,8 +107,7 @@ def obtener_reservas():
             reader = csv.reader(archivo)
             next(reader, None)
             
-            for i, fila in enumerate(reader):
-                #fila.insert(0, i)
+            for fila in reader:
                 lista_reservas.append(fila)
     
     return lista_reservas
@@ -118,34 +118,39 @@ def admin():
     todas_las_reservas = obtener_reservas()
     reser = len(todas_las_reservas)
 
-    # LÓGICA DEL GRÁFICO DE TENDENCIA
-    #Define el rango de días para el gráfico 
-    hoy = datetime.now()
-    fechas_grafico = []
-    porcentajes_grafico = []
+   
+    # LÓGICA DEL GRÁFICO POR MESES
+    conteo_meses = {}
 
-    for i in range(7):
-        dia_evaluado = hoy + timedelta(days=i)
-        fecha_str = dia_evaluado.strftime('%d %b') # Formato "12 Abr"
-        fechas_grafico.append(fecha_str)
+    for reserva in todas_las_reservas:
+        try:
+            f_entrada = datetime.strptime(reserva[3], '%Y-%m-%d')
 
-        #contador de reservas por dia
-        habitaciones_ocupadas_este_dia = 0
-        for reserva in todas_las_reservas:
-            try:
-                # reserva[3] es Entrada, reserva[4] es Salida (según tu lógica de confirmar_reserva)
-                f_entrada = datetime.strptime(reserva[3], '%Y-%m-%d')
-                f_salida = datetime.strptime(reserva[4], '%Y-%m-%d')
-                
-                # Si el día evaluado está dentro del rango de la reserva
-                if f_entrada.date() <= dia_evaluado.date() < f_salida.date():
-                    habitaciones_ocupadas_este_dia += 1
-            except (ValueError, IndexError):
-                continue
+            # formato: "2026-04"
+            mes_key = f_entrada.strftime('%Y-%m')
 
-        #Calcula el porcentaje de ocupación 
-        porcentaje = (habitaciones_ocupadas_este_dia / total_habitaciones) * 100
-        porcentajes_grafico.append(round(porcentaje, 1))
+            if mes_key in conteo_meses:
+                conteo_meses[mes_key] += 1
+            else:
+                conteo_meses[mes_key] = 1
+
+        except (ValueError, IndexError):
+            continue
+
+        # ordenar meses
+        meses_ordenados = sorted(conteo_meses.keys())
+
+        # labels bonitos: "Abr 2026"
+        fechas_grafico = [
+            datetime.strptime(m, '%Y-%m').strftime('%b %Y')
+            for m in meses_ordenados
+        ]
+
+        # calcular porcentaje
+        porcentajes_grafico = [
+            round((conteo_meses[m] / total_habitaciones) * 100, 1)
+            for m in meses_ordenados
+        ]
 
     return render_template('admin.html', 
                            lista_reservas=todas_las_reservas,
@@ -160,7 +165,14 @@ def admin():
 def eliminar_reserva(id):
     return redirect(url_for('reservas'))
 
-
-
+#este es la parte para descargar el scv ya existente --------------------------------------------------
+@app.route('/descargar-csv')
+def descargar_csv():
+    return send_file(
+        ruta_csv,
+        as_attachment=True,
+        download_name = "reservasHotel.csv"
+    )
+#-------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True)
